@@ -1,0 +1,248 @@
+# Ksoup Compatibility Audit
+
+This file is the self-check list for jsoup alignment work. It is based on:
+- Jsoup API docs: https://jsoup.org/apidocs/
+- Jsoup source repository: https://github.com/jhy/jsoup
+- Reviewed source files:
+  - `org/jsoup/nodes/Node.java`
+  - `org/jsoup/nodes/Element.java`
+  - `org/jsoup/nodes/Document.java`
+  - `org/jsoup/select/Elements.java`
+
+## Implemented in this repo
+- `Jsoup.connect(...)`
+- `Jsoup.newSession()`
+- `Connection` high-frequency subset:
+  - `url`, `header`, `cookie`
+  - bulk `headers(...)`, `cookies(...)`
+  - `userAgent`, `referrer`
+  - `method`, `timeout`, `maxBodySize`
+  - `proxy(host, port)` and request proxy state
+  - portable request authenticator state
+  - portable `validateTLSCertificates(...)` request state
+  - `data`, `data(Collection<KeyVal>)`, `requestBody`
+  - `postDataCharset`
+  - byte-array multipart/file `KeyVal`
+  - `parser(Parser)`
+  - `followRedirects`
+  - `ignoreHttpErrors`
+  - `ignoreContentType`
+  - `execute`, `get`, `post`
+  - `request`, `response`
+  - `newRequest`, `newRequest(url)`
+- `Response` high-frequency subset:
+  - `statusCode`, `statusMessage`
+  - `contentType`, `charset`
+  - `body`, `bodyAsBytes`
+  - `parse`
+- session cookie carry-over between requests
+- `Jsoup.parse(...)`
+- `Jsoup.parseBodyFragment(...)`
+- `Jsoup.parse(..., Parser)`
+- `Jsoup.parseBodyFragment(..., Parser)`
+- `Parser.htmlParser()`
+- `Parser.xmlParser()`
+- `Parser.parseInput(...)`
+- `Parser.parseBodyFragment(...)`
+- `Parser.unescapeEntities(...)`
+- `Document.outputSettings()`
+- `Document.OutputSettings`
+- `Document.parser()`
+- `Document.connection()`
+- `Document.charset()`
+- `Document.normalise()`
+- `Document.forms()`
+- `Document.expectForm(...)`
+- basic serialization support for `prettyPrint`, `outline`, `indentAmount`, `maxPaddingWidth`
+- HTML boolean attribute serialization in HTML output mode
+- XML-aware DOM mutation paths (`append/prepend/html/before/after`) via document parser
+- `Element.is(cssQuery)` / selector matching for full multi-step queries
+- HTML parser handling for common raw-text / RCDATA tags (`script`, `style`, `title`, `textarea`)
+- HTML parser handling for common optional end tags (`p`, `li`, `dt`, `dd`, `option`, `tr`, `td`, `th`)
+- HTML parser insertion of common table containers (`tbody`, `tr`, `colgroup`)
+- HTML parser repair for common table section ordering (`caption`, `thead`, `tbody`, `tfoot`)
+- HTML parser foster parenting for common misplaced content inside table contexts
+- HTML parser foster parenting for formatting elements nested in table contexts
+- HTML parser implicit close handling for `select/option/optgroup`
+- HTML parser repair for common non-nestable formatting/content tags (`a`, `button`, `nobr`)
+- HTML parser ignore behavior for nested `form` start tags
+- HTML parser closes paragraphs before common block and table-structural tags
+- HTML parser creates implied `<table>` containers for bare table-structural tags
+- HTML parser ignores duplicate / misplaced `html`, `head`, and `body` context tags while merging attributes
+- HTML parser creates implied list containers for bare `li`, `dt`, and `dd`
+- HTML parser implicit close handling for heading tags (`h1`-`h6`)
+- HTML parser creates implied `select` containers for bare `option` and `optgroup`
+- HTML parser raw-text handling for `iframe`, `noembed`, `noframes`, `xmp`, and EOF-style `plaintext`
+- HTML parser strips the first newline after `pre`, `textarea`, and `listing` start tags
+- HTML parser places `frameset` / `frame` in document-level flow instead of body flow
+- `Jsoup.clean(...)`
+- `Jsoup.clean(..., OutputSettings)`
+- `Jsoup.isValid(...)`
+- `Cleaner`
+- `Safelist.none()`
+- `Safelist.simpleText()`
+- `Safelist.basic()`
+- `Safelist.basicWithImages()`
+- `Safelist.relaxed()`
+- `Safelist` mutators for tags / attrs / enforced attrs / protocols / relative-link preservation
+- DOM basics: `Document`, `Element`, `TextNode`
+- `Attributes` compatibility wrapper plus live mutable `dataset()` view
+- Extra node types: `Comment`, `DataNode`, `CDataNode`, `DocumentType`, `XmlDeclaration`
+- Form support: `FormElement`, `FormElement.elements()`, `FormElement.formData()`, `FormElement.submit()`
+- Form convenience: `FormElement.addElement(...)`, `Element.form()`, `Elements.forms()`
+- Comment helpers: `isXmlDeclaration()`, `asXmlDeclaration()`
+- Encoded node factories: `TextNode.createFromEncoded(...)`, `DataNode.createFromEncoded(...)`
+- Node navigation: `parentNode`, `parent`, `childNode`, `childNodes`, `previousSibling`, `nextSibling`, `siblingNodes`, `root`
+- Base URI mutation: `setBaseUri(...)`
+- Node mutation: `before`, `after`, `remove`, `replaceWith`, `wrap`, `unwrap`
+- Node cloning: `clone()`, `shallowClone()`
+- Node comparison: `hasSameValue(...)`
+- Traversal support: `NodeTraversor`, `NodeVisitor`, `NodeFilter`, `Node.traverse(...)`, `Node.forEachNode(...)`, `Node.filter(...)`, `Elements.traverse(...)`, `Elements.forEachNode(...)`, `Elements.filter(...)`
+- Attribute API: `attr`, `hasAttr`, `removeAttr`, `attributesSize`, `absUrl`, `abs:*` lookup
+- Element mutation: `append`, `prepend`, `appendElement`, `prependElement`, `appendText`, `prependText`, `html(String)`, `text(String)`, `empty`
+- Element content API: `text`, `ownText`, `wholeText`, `wholeOwnText`, `textNodes`, `dataNodes`, `data`
+- Element text predicates: `hasText`, `hasOwnText`
+- Language API: `Element.lang()`
+- Form value API: `Element.val()`, `Element.val(String)`, `Elements.val()`, `Elements.val(String)`
+- Element lookup API:
+  - `getElementById`
+  - `getAllElements`
+  - `getElementsByTag`
+  - `getElementsByClass`
+  - `getElementsByAttribute`
+  - `getElementsByAttributeStarting`
+  - `getElementsByAttributeValue`
+  - `getElementsByAttributeValueContaining`
+  - `getElementsByAttributeValueStarting`
+  - `getElementsByAttributeValueEnding`
+  - `getElementsByAttributeValueMatching`
+  - `getElementsByAttributeValueNot`
+  - `getElementsByIndexLessThan`
+  - `getElementsByIndexGreaterThan`
+  - `getElementsByIndexEquals`
+  - `getElementsContainingText`
+  - `getElementsContainingOwnText`
+  - `getElementsContainingData`
+  - `getElementsContainingWholeText`
+  - `getElementsContainingWholeOwnText`
+  - `getElementsMatchingText`
+  - `getElementsMatchingOwnText`
+  - `getElementsMatchingWholeText`
+  - `getElementsMatchingWholeOwnText`
+  - `Regex` overloads for matching-text and matching-attribute-value lookups
+- `TextNode.splitText(...)`
+- `Element.cssSelector()`
+- `Element.normalName()`
+- Selector support:
+  - tag
+  - `#id`
+  - `.class`
+  - descendant combinator
+  - child combinator `>`
+  - adjacent sibling combinator `+`
+  - general sibling combinator `~`
+  - selector groups `,`
+  - `[attr]`
+  - `[attr=value]`
+  - `[attr!=value]`
+  - `[attr^=value]`
+  - `[attr$=value]`
+  - `[attr*=value]`
+  - `:contains(text)`
+  - `:containsOwn(text)`
+  - `:containsWholeText(text)`
+  - `:containsWholeOwnText(text)`
+  - `:containsData(text)`
+  - `:parent`
+  - `:header`
+  - `:lang(code)`
+  - `:first`
+  - `:last`
+  - `:even`
+  - `:odd`
+  - `:lt(n)`
+  - `:gt(n)`
+  - `:eq(n)`
+  - `:has(selector)`
+  - `:hasText`
+  - `:checked`
+  - `:selected`
+  - `:disabled`
+  - `:enabled`
+  - `:required`
+  - `:optional`
+  - `:readOnly`
+  - `:readWrite`
+  - `:input`
+  - `:button`
+  - `:text`
+  - `:radio`
+  - `:checkbox`
+  - `:file`
+  - `:password`
+  - `:image`
+  - `:submit`
+  - `:reset`
+  - `:is(selector)`
+  - `:where(selector)`
+  - `:not(selector)`
+  - `:empty`
+  - `:root`
+  - `:first-child`
+  - `:last-child`
+  - `:first-of-type`
+  - `:last-of-type`
+  - `:only-child`
+  - `:only-of-type`
+  - `:nth-child(an+b)`
+  - `:nth-last-child(an+b)`
+  - `:nth-of-type(an+b)`
+  - `:nth-last-of-type(an+b)`
+  - `:matches(regex)`
+  - `:matchesOwn(regex)`
+  - `:matchesWholeText(regex)`
+  - `:matchesWholeOwnText(regex)`
+  - `[attr~=regex]`
+- `Elements` convenience API:
+  - `first`, `last`, `eq`
+  - `clone`
+  - `text`, `html`, `outerHtml`, `hasText`
+  - `attr`, `eachAttr`, `hasAttr`, `is(cssQuery)`
+  - `addClass`, `removeClass`, `toggleClass`, `hasClass`
+  - `select`, `selectFirst`, `expectFirst`
+  - `not`, `parents`
+  - `next`, `prev`, `nextAll`, `prevAll`, `siblings`
+  - `before`, `after`, `append`, `prepend`, `html(String)`, `text(String)`, `tagName(String)`, `wrap`, `unwrap`
+  - `remove`, `empty`
+
+## Known gaps not yet aligned
+- Full HTML5 parsing behavior and error recovery
+- Full jsoup selector grammar and pseudo selectors
+- `Parser` configuration API parity (`ParseSettings`, error tracking, tree builder knobs)
+- several `Connection` details are still incomplete:
+  - SSL / request cert options
+  - stream-based `KeyVal` parity with JVM `InputStream`
+  - full auth challenge handling parity
+  - full redirect semantics and max body size
+  - content-type sniffing and charset detection parity
+  - all request / response mutator methods from jsoup source
+- Cleaner / `Safelist` parity gaps:
+  - fuller default safelist definitions and validation edge cases
+  - full output settings / pretty-print parity during cleaning
+  - richer protocol and attribute checks
+- `Attributes` dedicated type parity beyond current subset
+- `LeafNode`
+- source position tracking
+- richer output settings parity:
+  - pretty-print / outline formatting fidelity
+  - full entity table / escape mode parity
+  - optional closing tag output behavior
+- XML parser compatibility beyond the current lightweight path:
+  - case-preserving tags / attrs parity
+  - XML output settings parity
+  - stricter processing instruction / fragment behavior
+- many newer node-selection APIs added in recent jsoup releases
+
+## Current rule for continuing work
+- Before adding a new compatibility feature, compare against jsoup source or API docs.
+- After implementation, update this file to move the item from gap to implemented.
