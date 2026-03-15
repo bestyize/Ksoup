@@ -2,13 +2,18 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidMultiplatformLibrary)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+    androidLibrary {
+        namespace = "xyz.thewind.ksoup.library"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        compilations.configureEach {
+            compilerOptions.configure {
+                jvmTarget.set(JvmTarget.JVM_11)
+            }
         }
     }
 
@@ -25,35 +30,37 @@ kotlin {
     jvm()
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(libs.kotlinx.coroutinesCore)
-            implementation(libs.ktor.client.core)
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.kotlinx.coroutinesCore)
+                implementation(libs.ktor.client.core)
+            }
         }
-        androidMain.dependencies {
-            implementation(libs.ktor.client.cio)
+        val androidMain by getting
+        val iosArm64Main by getting
+        val iosSimulatorArm64Main by getting
+        val jvmMain by getting
+        val jvmCommonMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.ktor.client.cio)
+            }
         }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+        val iosMain by creating {
+            dependsOn(commonMain)
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
-        jvmMain.dependencies {
-            implementation(libs.ktor.client.cio)
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.kotlin.test)
+            }
         }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
-        }
-    }
-}
 
-android {
-    namespace = "xyz.thewind.ksoup"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        androidMain.dependsOn(jvmCommonMain)
+        jvmMain.dependsOn(jvmCommonMain)
+        iosArm64Main.dependsOn(iosMain)
+        iosSimulatorArm64Main.dependsOn(iosMain)
     }
 }
