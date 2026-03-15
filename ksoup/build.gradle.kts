@@ -20,6 +20,7 @@ kotlin {
 
     listOf(
         iosArm64(),
+        iosX64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
@@ -39,6 +40,7 @@ kotlin {
         }
         val androidMain by getting
         val iosArm64Main by getting
+        val iosX64Main by getting
         val iosSimulatorArm64Main by getting
         val jvmMain by getting
         val jvmCommonMain by creating {
@@ -62,6 +64,7 @@ kotlin {
         androidMain.dependsOn(jvmCommonMain)
         jvmMain.dependsOn(jvmCommonMain)
         iosArm64Main.dependsOn(iosMain)
+        iosX64Main.dependsOn(iosMain)
         iosSimulatorArm64Main.dependsOn(iosMain)
     }
 }
