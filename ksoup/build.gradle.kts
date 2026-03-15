@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
+    id("maven-publish")
 }
 
 kotlin {
@@ -62,5 +63,14 @@ kotlin {
         jvmMain.dependsOn(jvmCommonMain)
         iosArm64Main.dependsOn(iosMain)
         iosSimulatorArm64Main.dependsOn(iosMain)
+    }
+}
+
+publishing {
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            name.set("ksoup")
+            description.set("Ksoup Kotlin Multiplatform HTML parser")
+        }
     }
 }

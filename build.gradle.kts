@@ -10,3 +10,8 @@ plugins {
     alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
+
+allprojects {
+    group = "xyz.thewind.ksoup"
+    version = "0.1.0-SNAPSHOT"
+}

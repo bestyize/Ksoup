@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    id("maven-publish")
 }
 
 kotlin {
@@ -70,6 +71,15 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "xyz.thewind.ksoup"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+publishing {
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            name.set("composeApp")
+            description.set("Ksoup Compose Multiplatform demo UI")
         }
     }
 }
